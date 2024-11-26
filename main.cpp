@@ -1,3 +1,11 @@
-//
-// Created by katie on 11/26/2024.
-//
+#include <iostream>
+
+//merge sort
+
+//quick sort
+
+//maxheap
+
+//parse ratings, title, and genre data
+
+//menu for search

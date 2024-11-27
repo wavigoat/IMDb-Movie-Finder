@@ -7,16 +7,23 @@ using namespace std;
 class HeapNode{
 private:
     string title;
-    float rating;
     vector<string> genre;
+    float rating;
 public:
-    HeapNode(string, vector<string>, float);
+    HeapNode(string newTitle, vector<string> newGenres, float newRating) {
+        title = newTitle;
+        genre = newGenres;
+        rating = newRating;
+    }
+    string getTitle(){
+        return title;
+    }
+    vector<string> getGenre(){
+        return genre;
+    }
+    float getRating(){
+        return rating;
+    }
 };
-
-HeapNode::HeapNode(string newTitle, vector<string> newGenres, float newRating) {
-    title = newTitle;
-    genre = newGenres;
-    rating = newRating;
-}
 
 #endif //IMDB_MOVIE_FINDER_NODES_H

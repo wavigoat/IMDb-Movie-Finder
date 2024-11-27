@@ -3,4 +3,5 @@ project(IMDb-Movie-Finder)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(IMDb-Movie-Finder main.cpp)
+add_executable(IMDb-Movie-Finder main.cpp
+        nodes.cpp)

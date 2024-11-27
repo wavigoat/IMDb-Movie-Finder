@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include "nodes.cpp"
 
 //merge sort
 
@@ -9,3 +11,10 @@
 //parse ratings, title, and genre data
 
 //menu for search
+
+
+int main() {
+    vector<HeapNode> heap;
+
+    return 0;
+}

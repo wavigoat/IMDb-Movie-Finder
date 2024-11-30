@@ -114,9 +114,31 @@ int main() {
                 print_genres_available();
             }
         }
-        cout << "Enter the minimum number of ratings: ";
-        cin >> minNumVotes;
-        cin.ignore();  // Ignore newline character left in the buffer
+        while (true) {
+            string tempNumVotes;
+            cout << "Enter the minimum number of ratings: ";
+            getline(cin, tempNumVotes);
+            if (tempNumVotes.empty()) {
+                cout << "The minimum number of rating has been defaulted to 0." << endl;
+                break;
+            }
+            try {
+                numVotes = stoi(tempNumVotes);
+            } catch (const invalid_argument& e) {
+                cout << "Enter an integer greater than or equal to 0" << endl;
+                continue;
+            } catch (const std::out_of_range& e) {
+                cout << "Enter an integer greater than or equal to 0" << endl;
+                continue;
+            }
+            if (numVotes<0) {
+                cout << "Enter an integer greater than or equal to 0" << endl;
+                continue;
+            }
+            else {
+                break;
+            }
+        }
 
         ifstream file("../imdb_data.tsv");
 

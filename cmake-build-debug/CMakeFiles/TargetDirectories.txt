@@ -1,0 +1,3 @@
+C:/Users/James Gannon/CLionProjects/IMDb-Movie-Finder/cmake-build-debug/CMakeFiles/IMDb-Movie-Finder.dir
+C:/Users/James Gannon/CLionProjects/IMDb-Movie-Finder/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/James Gannon/CLionProjects/IMDb-Movie-Finder/cmake-build-debug/CMakeFiles/rebuild_cache.dir

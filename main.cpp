@@ -100,7 +100,7 @@ int main() {
         int i = 1;
         while(i<=2) {
             string genreInput;
-            cout << "Genre " << (i) << ": ";
+            cout << "Genre " << (i) << ":";
             getline(cin, genreInput);
             if (genreInput.empty()) {
                 break;
@@ -114,16 +114,18 @@ int main() {
                 print_genres_available();
             }
         }
+
         while (true) {
             string tempNumVotes;
-            cout << "Enter the minimum number of ratings: ";
+            cout << "Enter the minimum number of ratings:";
             getline(cin, tempNumVotes);
             if (tempNumVotes.empty()) {
                 cout << "The minimum number of rating has been defaulted to 0." << endl;
+                minNumVotes = 0;
                 break;
             }
             try {
-                numVotes = stoi(tempNumVotes);
+                minNumVotes = stoi(tempNumVotes);
             } catch (const invalid_argument& e) {
                 cout << "Enter an integer greater than or equal to 0" << endl;
                 continue;
@@ -131,7 +133,7 @@ int main() {
                 cout << "Enter an integer greater than or equal to 0" << endl;
                 continue;
             }
-            if (numVotes<0) {
+            if (minNumVotes<0) {
                 cout << "Enter an integer greater than or equal to 0" << endl;
                 continue;
             }
@@ -139,6 +141,37 @@ int main() {
                 break;
             }
         }
+
+        float minRating;
+        cout << "Enter a decimal minimum rating between 0.0 and 10.0:";
+
+        while (true) {
+            string tempMinRating;
+            getline(cin, tempMinRating);
+            if (tempMinRating.empty()) {
+                cout << "The minimum number of rating has been defaulted to 0.0" << endl;
+                minRating = 0.0;
+                break;
+            }
+            try {
+                minRating = stof(tempMinRating);
+            } catch (const invalid_argument& e) {
+                cout << "Enter a decimal minimum rating between 0.0 and 10.0: " << endl;
+                continue;
+            } catch (const std::out_of_range& e) {
+                cout << "Enter a decimal minimum rating between 0.0 and 10.0: " << endl;
+                continue;
+            }
+            if (minRating<0.0 || minRating>10.0) {
+                cout << "Enter a decimal minimum rating between 0.0 and 10.0: " << endl;
+                continue;
+            }
+            else {
+                break;
+            }
+        }
+
+
 
         ifstream file("../imdb_data.tsv");
 
@@ -192,112 +225,129 @@ int main() {
                 }
             }
 
-            if (genreMatch && numVotes >= minNumVotes) {
+            if (genreMatch && numVotes >= minNumVotes && rating>=minRating) {
                 heap.push_back(HeapNode(title, genre, rating, numVotes, directors));
             }
         }
         file.close();
 
+
         // Ask the user if they want the top films or random recommendations
-        char choice;
-        cout
-                << "\nWould you like the top films or random recommendations? (Enter 'T' for top films, 'R' for random recommendations): ";
-        cin >> choice;
-        choice = tolower(choice);
+        while (true) {
+            char choice;
+            cout
+                    << "\nWould you like the top films or random recommendations? (Enter 'T' for top films, 'R' for random recommendations): ";
+            cin >> choice;
+            cin.ignore();
+            choice = tolower(choice);
 
-        if (choice == 't') {
-            // Sort the films and display the top 5
-            vector<HeapNode> heapCopy1 = heap;
-            vector<HeapNode> heapCopy2 = heap;
+            if (choice == 't') {
 
-            // Measure time taken for heap sort
-            auto startHeapSort = chrono::high_resolution_clock::now();
-            heapSort(heap);
-            auto endHeapSort = chrono::high_resolution_clock::now();
-            chrono::duration<double> heapSortDuration = endHeapSort - startHeapSort;
-
-            // Measure time taken for insertion sort
-            auto startInsertionSort = chrono::high_resolution_clock::now();
-            insertionSort(heapCopy1);
-            auto endInsertionSort = chrono::high_resolution_clock::now();
-            chrono::duration<double> insertionSortDuration = endInsertionSort - startInsertionSort;
-
-            // Measure time taken for merge sort
-            auto startMergeSort = chrono::high_resolution_clock::now();
-            mergeSort(heapCopy2, 0, heapCopy2.size() - 1);
-            auto endMergeSort = chrono::high_resolution_clock::now();
-            chrono::duration<double> mergeSortDuration = endMergeSort - startMergeSort;
-
-            // Output sorting times
-            cout << "Heap Sort Time: " << heapSortDuration.count() << " seconds" << endl;
-            cout << "Insertion Sort Time: " << insertionSortDuration.count() << " seconds" << endl;
-            cout << "Merge Sort Time: " << mergeSortDuration.count() << " seconds" << endl;
-
-            // Output the 5 highest-rated movies that match the filter using heap sort
-            cout << "\nTop 5 highest-rated movies in genre(s) with at least " << minNumVotes << " ratings (Heap Sort):"
-                 << endl;
-            for (int i = heap.size() - 1; i >= max(0, static_cast<int>(heap.size()) - 5); i--) {
-                cout << "Title: " << heap[i].getTitle() << ", Director(s): " << heap[i].getDirectors() << ", Rating: "
-                     << heap[i].getRating() << ", Number of Ratings: " << heap[i].getNumVotes() << endl;
-            }
-
-            // Output the 5 highest-rated movies that match the filter using insertion sort
-            cout << "\nTop 5 highest-rated movies in genre(s) with at least " << minNumVotes
-                 << " ratings (Insertion Sort):" << endl;
-            for (int i = 0; i < 5 && i < heapCopy1.size(); i++) {
-                cout << "Title: " << heapCopy1[i].getTitle() << ", Director(s): " << heapCopy1[i].getDirectors()
-                     << ", Rating: " << heapCopy1[i].getRating() << ", Number of Ratings: "
-                     << heapCopy1[i].getNumVotes() << endl;
-            }
-
-            // Output the 5 highest-rated movies that match the filter using merge sort
-            cout << "\nTop 5 highest-rated movies in genre(s) with at least " << minNumVotes << " ratings (Merge Sort):"
-                 << endl;
-            for (int i = 0; i < 5 && i < heapCopy2.size(); i++) {
-                cout << "Title: " << heapCopy2[i].getTitle() << ", Director(s): " << heapCopy2[i].getDirectors()
-                     << ", Rating: " << heapCopy2[i].getRating() << ", Number of Ratings: "
-                     << heapCopy2[i].getNumVotes() << endl;
-            }
-
-        } else if (choice == 'r') {
-            // Get the minimum rating for random recommendations
-            float minRating;
-            cout << "Enter the minimum rating for random recommendations: ";
-            cin >> minRating;
-
-            // Filter movies that match the minimum rating criteria
-            vector<HeapNode> filteredMovies;
-            for (auto &movie: heap) {
-                if (movie.getRating() >= minRating) {
-                    filteredMovies.push_back(movie);
+                // Sort the films and display the top 5
+                if (heap.empty()) {
+                    cout << "\nSorry, there are not any movies that match this criteria. PLease use different criteria next time." << endl;
                 }
-            }
+                else {
+                    vector<HeapNode> heapCopy1 = heap;
+                    vector<HeapNode> heapCopy2 = heap;
 
-            // Shuffle the filtered movies and display 5 random ones
-            random_device rd;
-            mt19937 g(rd());
-            shuffle(filteredMovies.begin(), filteredMovies.end(), g);
+                    // Measure time taken for heap sort
+                    auto startHeapSort = chrono::high_resolution_clock::now();
+                    heapSort(heap);
+                    auto endHeapSort = chrono::high_resolution_clock::now();
+                    chrono::duration<double> heapSortDuration = endHeapSort - startHeapSort;
 
-            cout << "\nRandom 5 movies that match the criteria:" << endl;
-            for (int i = 0; i < 5 && i < filteredMovies.size(); i++) {
-                cout << "Title: " << filteredMovies[i].getTitle() << ", Director(s): "
-                     << filteredMovies[i].getDirectors() << ", Rating: " << filteredMovies[i].getRating()
-                     << ", Number of Ratings: " << filteredMovies[i].getNumVotes() << endl;
+                    // Measure time taken for insertion sort
+                    auto startInsertionSort = chrono::high_resolution_clock::now();
+                    insertionSort(heapCopy1);
+                    auto endInsertionSort = chrono::high_resolution_clock::now();
+                    chrono::duration<double> insertionSortDuration = endInsertionSort - startInsertionSort;
+
+                    // Measure time taken for merge sort
+                    auto startMergeSort = chrono::high_resolution_clock::now();
+                    mergeSort(heapCopy2, 0, heapCopy2.size() - 1);
+                    auto endMergeSort = chrono::high_resolution_clock::now();
+                    chrono::duration<double> mergeSortDuration = endMergeSort - startMergeSort;
+
+                    // Output sorting times
+                    cout << "\nHeap Sort Time: " << heapSortDuration.count() << " seconds" << endl;
+                    cout << "Insertion Sort Time: " << insertionSortDuration.count() << " seconds" << endl;
+                    cout << "Merge Sort Time: " << mergeSortDuration.count() << " seconds" << endl;
+
+                    // Output the 5 highest-rated movies that match the filter using heap sort
+                    cout << "\nTop 5 highest-rated movies in given genre(s) with at least " << minNumVotes
+                         << " ratings (Heap Sort):"
+                         << endl;
+                    for (int i = heap.size() - 1; i >= max(0, static_cast<int>(heap.size()) - 5); i--) {
+                        cout << "Title: " << heap[i].getTitle() << ", Director(s): " << heap[i].getDirectors()
+                             << ", Rating: "
+                             << heap[i].getRating() << ", Number of Ratings: " << heap[i].getNumVotes() << endl;
+                    }
+
+                    // Output the 5 highest-rated movies that match the filter using insertion sort
+                    cout << "\nTop 5 highest-rated movies in given genre(s) with at least " << minNumVotes
+                         << " ratings (Insertion Sort):" << endl;
+                    for (int i = 0; i < 5 && i < heapCopy1.size(); i++) {
+                        cout << "Title: " << heapCopy1[i].getTitle() << ", Director(s): " << heapCopy1[i].getDirectors()
+                             << ", Rating: " << heapCopy1[i].getRating() << ", Number of Ratings: "
+                             << heapCopy1[i].getNumVotes() << endl;
+                    }
+
+                    // Output the 5 highest-rated movies that match the filter using merge sort
+                    cout << "\nTop 5 highest-rated movies in given genre(s) with at least " << minNumVotes
+                         << " ratings (Merge Sort):"
+                         << endl;
+                    for (int i = 0; i < 5 && i < heapCopy2.size(); i++) {
+                        cout << "Title: " << heapCopy2[i].getTitle() << ", Director(s): " << heapCopy2[i].getDirectors()
+                             << ", Rating: " << heapCopy2[i].getRating() << ", Number of Ratings: "
+                             << heapCopy2[i].getNumVotes() << endl;
+                    }
+                }
+                break;
+            } else if (choice == 'r') {
+                if (heap.empty()) {
+                    cout << "\nSorry, there are not any movies that match this criteria. PLease use different criteria next time." << endl;
+                }
+                else {
+
+                    // Filter movies that match the minimum rating criteria
+                    vector<HeapNode> filteredMovies;
+                    for (auto &movie: heap) {
+                        if (movie.getRating() >= minRating) {
+                            filteredMovies.push_back(movie);
+                        }
+                    }
+
+                    // Shuffle the filtered movies and display 5 random ones
+                    random_device rd;
+                    mt19937 g(rd());
+                    shuffle(filteredMovies.begin(), filteredMovies.end(), g);
+
+                    cout << "\nRandom 5 movies that match the criteria:" << endl;
+                    for (int i = 0; i < 5 && i < filteredMovies.size(); i++) {
+                        cout << "Title: " << filteredMovies[i].getTitle() << ", Director(s): "
+                             << filteredMovies[i].getDirectors() << ", Rating: " << filteredMovies[i].getRating()
+                             << ", Number of Ratings: " << filteredMovies[i].getNumVotes() << endl;
+                    }
+                }
+                break;
+            } else {
+                cout << "That is not one of the options, please choose either 'T' or 'R'." << endl;
+                continue;
             }
-        } else {
-            cout << "Invalid choice. The program will restart. Next time choose either 'T' or 'R'." << endl;
         }
         char to_continue;
         cout << "\nWould you like to continue browsing for movies? (Enter 'Y' for yes):";
 
          cin >> to_continue;
+         cin.ignore();
         to_continue = tolower(to_continue);
         if (to_continue == 'y') {
             cout << "\n";
             continue;
         }
         else {
-            cout << "Thank you for using our movie rating system!";
+            cout << "\nThank you for using our IMDb Movie Finder!";
             break;
         }
     }

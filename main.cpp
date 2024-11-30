@@ -67,11 +67,11 @@ vector<string> list_of_genres () {
 
 }
 
-bool viable_genre(string input) {
+bool viable_genre(const string& input) {
     bool result = false;
     string test = toLower(input);
     vector<string> all_genres = list_of_genres();
-    if (find(all_genres.begin(), all_genres.end(), input) != all_genres.end()) {
+    if (find(all_genres.begin(), all_genres.end(), test) != all_genres.end()) {
         result = true;
     }
     return result;

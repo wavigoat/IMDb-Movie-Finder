@@ -85,7 +85,7 @@ void print_genres_available() {
 }
 
 int main() {
-
+    cout << "Welcome to the IMDb Movie Finder. Please follow the prompts for a list of movie that match your criteria." << endl;
     while(true) {
         vector<HeapNode> heap;
         string tconst, titleType, title, directors, line;
@@ -120,8 +120,8 @@ int main() {
             cout << "Enter the minimum number of ratings:";
             getline(cin, tempNumVotes);
             if (tempNumVotes.empty()) {
-                cout << "The minimum number of rating has been defaulted to 0." << endl;
-                minNumVotes = 0;
+                cout << "The minimum number of rating has been defaulted to 100." << endl;
+                minNumVotes = 100;
                 break;
             }
             try {
@@ -149,8 +149,8 @@ int main() {
             string tempMinRating;
             getline(cin, tempMinRating);
             if (tempMinRating.empty()) {
-                cout << "The minimum number of rating has been defaulted to 0.0" << endl;
-                minRating = 0.0;
+                cout << "The minimum number of rating has been defaulted to 7.5" << endl;
+                minRating = 7.5;
                 break;
             }
             try {
@@ -234,20 +234,24 @@ int main() {
 
         // Ask the user if they want the top films or random recommendations
         while (true) {
-            char choice;
-            cout
-                    << "\nWould you like the top films or random recommendations? (Enter 'T' for top films, 'R' for random recommendations): ";
-            cin >> choice;
-            cin.ignore();
-            choice = tolower(choice);
+            string choice;
+            cout << "\nWould you like the top films or random recommendations? (Enter 'T' for top films, 'R' for random recommendations):";
+            getline(cin, choice);
+            choice = toLower(choice);
 
-            if (choice == 't') {
-
+            if (choice == "t" || choice.empty()) {
+                if (choice.empty()) {
+                    cout << endl;
+                    cout << "The choice is defaulted to top films" << endl;
+                }
                 // Sort the films and display the top 5
                 if (heap.empty()) {
                     cout << "\nSorry, there are not any movies that match this criteria. PLease use different criteria next time." << endl;
                 }
                 else {
+
+
+                    cout << "\nPlease be patient while we generate your list of movies :)" << endl;
                     vector<HeapNode> heapCopy1 = heap;
                     vector<HeapNode> heapCopy2 = heap;
 
@@ -255,19 +259,19 @@ int main() {
                     auto startHeapSort = chrono::high_resolution_clock::now();
                     heapSort(heap);
                     auto endHeapSort = chrono::high_resolution_clock::now();
-                    chrono::duration<double> heapSortDuration = endHeapSort - startHeapSort;
+                    chrono::duration<double> heapSortDuration = endHeapSort-startHeapSort;
 
                     // Measure time taken for insertion sort
                     auto startInsertionSort = chrono::high_resolution_clock::now();
                     insertionSort(heapCopy1);
                     auto endInsertionSort = chrono::high_resolution_clock::now();
-                    chrono::duration<double> insertionSortDuration = endInsertionSort - startInsertionSort;
+                    chrono::duration<double> insertionSortDuration = endInsertionSort-startInsertionSort;
 
                     // Measure time taken for merge sort
                     auto startMergeSort = chrono::high_resolution_clock::now();
                     mergeSort(heapCopy2, 0, heapCopy2.size() - 1);
                     auto endMergeSort = chrono::high_resolution_clock::now();
-                    chrono::duration<double> mergeSortDuration = endMergeSort - startMergeSort;
+                    chrono::duration<double> mergeSortDuration = endMergeSort-startMergeSort;
 
                     // Output sorting times
                     cout << "\nHeap Sort Time: " << heapSortDuration.count() << " seconds" << endl;
@@ -304,12 +308,11 @@ int main() {
                     }
                 }
                 break;
-            } else if (choice == 'r') {
+            } else if (choice == "r") {
                 if (heap.empty()) {
                     cout << "\nSorry, there are not any movies that match this criteria. PLease use different criteria next time." << endl;
                 }
                 else {
-
                     // Filter movies that match the minimum rating criteria
                     vector<HeapNode> filteredMovies;
                     for (auto &movie: heap) {
@@ -323,7 +326,7 @@ int main() {
                     mt19937 g(rd());
                     shuffle(filteredMovies.begin(), filteredMovies.end(), g);
 
-                    cout << "\nRandom 5 movies that match the criteria:" << endl;
+                    cout << "\nHere are 5 random movies that match the criteria:" << endl;
                     for (int i = 0; i < 5 && i < filteredMovies.size(); i++) {
                         cout << "Title: " << filteredMovies[i].getTitle() << ", Director(s): "
                              << filteredMovies[i].getDirectors() << ", Rating: " << filteredMovies[i].getRating()
@@ -331,7 +334,8 @@ int main() {
                     }
                 }
                 break;
-            } else {
+            }
+            else {
                 cout << "That is not one of the options, please choose either 'T' or 'R'." << endl;
                 continue;
             }

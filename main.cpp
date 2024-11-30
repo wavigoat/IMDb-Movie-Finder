@@ -57,7 +57,6 @@ vector<string> list_of_genres () {
     result.push_back("reality-TV");
     result.push_back("romance");
     result.push_back("sci-fi");
-    result.push_back("short");
     result.push_back("sport");
     result.push_back("talk-show");
     result.push_back("thriller");
@@ -78,6 +77,13 @@ bool viable_genre(string input) {
     return result;
 }
 
+void print_genres_available() {
+    vector<string> output = list_of_genres();
+    for (int i=0; i<output.size(); i++) {
+        cout << "     " << output[i] << endl;
+    }
+}
+
 int main() {
 
     while(true) {
@@ -86,20 +92,27 @@ int main() {
         int year, numVotes;
         vector<string> genre;
         float rating;
-        bool testing = viable_genre("horror");
 
         // Input up to two genres and minimum number of ratings
         vector<string> targetGenres;
         int minNumVotes;
         cout << "Enter up to two genres to filter by (press enter without input to stop): " << endl;
-        for (int i = 0; i < 2; ++i) {
+        int i = 1;
+        while(i<=2) {
             string genreInput;
-            cout << "Genre " << (i + 1) << ": ";
+            cout << "Genre " << (i) << ": ";
             getline(cin, genreInput);
             if (genreInput.empty()) {
                 break;
             }
-            targetGenres.push_back(toLower(genreInput));
+            if (viable_genre(genreInput)) {
+                targetGenres.push_back(toLower(genreInput));
+                i++;
+            }
+            else {
+                cout << "The genre inputted is not available, please enter one of the following:" << endl;
+                print_genres_available();
+            }
         }
         cout << "Enter the minimum number of ratings: ";
         cin >> minNumVotes;

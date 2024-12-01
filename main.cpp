@@ -11,6 +11,7 @@
 #include "heap_sort.h"
 #include "insertion_sort.h"
 #include "merge_sort.h"
+#include "shell_sort.h"
 
 using namespace std;
 
@@ -254,6 +255,7 @@ int main() {
                     cout << "\nPlease be patient while we generate your list of movies :)" << endl;
                     vector<HeapNode> heapCopy1 = heap;
                     vector<HeapNode> heapCopy2 = heap;
+                    vector<HeapNode> heapCopy3 = heap;
 
                     // Measure time taken for heap sort
                     auto startHeapSort = chrono::high_resolution_clock::now();
@@ -273,10 +275,18 @@ int main() {
                     auto endMergeSort = chrono::high_resolution_clock::now();
                     chrono::duration<double> mergeSortDuration = endMergeSort-startMergeSort;
 
+                    // Measure time taken for shell sort
+                    auto startShellSort = chrono::high_resolution_clock::now();
+                    shellsort(heapCopy3);
+                    auto endShellSort = chrono::high_resolution_clock::now();
+                    chrono::duration<double> shellSortDuration = endShellSort-startShellSort;
+
                     // Output sorting times
                     cout << "\nHeap Sort Time: " << heapSortDuration.count() << " seconds" << endl;
                     cout << "Insertion Sort Time: " << insertionSortDuration.count() << " seconds" << endl;
                     cout << "Merge Sort Time: " << mergeSortDuration.count() << " seconds" << endl;
+                    cout << "Shell Sort Time: " << shellSortDuration.count() << " seconds" << endl;
+
 
                     // Output the 5 highest-rated movies that match the filter using heap sort
                     cout << "\nTop 5 highest-rated movies in given genre(s) with at least " << minNumVotes
@@ -305,6 +315,16 @@ int main() {
                         cout << "Title: " << heapCopy2[i].getTitle() << ", Director(s): " << heapCopy2[i].getDirectors()
                              << ", Rating: " << heapCopy2[i].getRating() << ", Number of Ratings: "
                              << heapCopy2[i].getNumVotes() << endl;
+                    }
+
+                    // Output the 5 highest-rated movies that match the filter using shell sort
+                    cout << "\nTop 5 highest-rated movies in given genre(s) with at least " << minNumVotes
+                         << " ratings (Shell Sort):"
+                         << endl;
+                    for (int i = heapCopy3.size() - 1; i >= max(0, static_cast<int>(heapCopy3.size()) - 5); i--) {
+                        cout << "Title: " << heapCopy3[i].getTitle() << ", Director(s): " << heapCopy3[i].getDirectors()
+                             << ", Rating: "
+                             << heapCopy3[i].getRating() << ", Number of Ratings: " << heapCopy3[i].getNumVotes() << endl;
                     }
                 }
                 break;

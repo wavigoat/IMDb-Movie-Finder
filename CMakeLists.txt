@@ -11,4 +11,6 @@ add_executable(IMDb-Movie-Finder main.cpp
         insertion_sort.cpp
         merge_sort.h
         merge_sort.cpp
+        shell_sort.h
+        shell_sort.cpp
 )

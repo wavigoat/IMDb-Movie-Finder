@@ -16,6 +16,7 @@
 using namespace std;
 
 // Convert a string to lowercase
+// This function makes the comparison case-insensitive
 string toLower(const string& input) {
     string result = input;
     transform(result.begin(), result.end(), result.begin(), ::tolower);
@@ -23,6 +24,7 @@ string toLower(const string& input) {
 }
 
 // Function to split strings by commas
+// Used for splitting genre strings in the movie data
 vector<string> splitByComma(const string& input) {
     vector<string> result;
     stringstream ss(input);
@@ -35,6 +37,8 @@ vector<string> splitByComma(const string& input) {
     return result;
 }
 
+// List of all possible genres for validation
+// This is used to ensure user input is valid
 vector<string> list_of_genres () {
     vector<string> result;
     result.push_back("action");
@@ -65,9 +69,10 @@ vector<string> list_of_genres () {
     result.push_back("western");
 
     return result;
-
 }
 
+// Check if the given genre is valid
+// Verifies if the input matches a genre from the predefined list
 bool viable_genre(const string& input) {
     bool result = false;
     string test = toLower(input);
@@ -78,6 +83,8 @@ bool viable_genre(const string& input) {
     return result;
 }
 
+// Print all available genres to the user
+// Helps the user to understand valid options for genres
 void print_genres_available() {
     vector<string> output = list_of_genres();
     for (int i=0; i<output.size(); i++) {
@@ -111,16 +118,19 @@ int main() {
                 i++;
             }
             else {
+                // Inform the user if the genre is not valid and display available options
                 cout << "The genre inputted is not available, please enter one of the following:" << endl;
                 print_genres_available();
             }
         }
 
+        // Input minimum number of votes and validate input
         while (true) {
             string tempNumVotes;
             cout << "Enter the minimum number of ratings:";
             getline(cin, tempNumVotes);
             if (tempNumVotes.empty()) {
+                // Default minimum votes if user provides no input
                 cout << "The minimum number of rating has been defaulted to 100." << endl;
                 minNumVotes = 100;
                 break;
@@ -128,6 +138,7 @@ int main() {
             try {
                 minNumVotes = stoi(tempNumVotes);
             } catch (const invalid_argument& e) {
+                // Handle invalid non-numeric input
                 cout << "Enter an integer greater than or equal to 0" << endl;
                 continue;
             } catch (const std::out_of_range& e) {
@@ -143,6 +154,7 @@ int main() {
             }
         }
 
+        // Input minimum rating and validate input
         float minRating;
         cout << "Enter a decimal minimum rating between 0.0 and 10.0:";
 
@@ -150,6 +162,7 @@ int main() {
             string tempMinRating;
             getline(cin, tempMinRating);
             if (tempMinRating.empty()) {
+                // Default minimum rating if user provides no input
                 cout << "The minimum number of rating has been defaulted to 7.5" << endl;
                 minRating = 7.5;
                 break;
@@ -157,6 +170,7 @@ int main() {
             try {
                 minRating = stof(tempMinRating);
             } catch (const invalid_argument& e) {
+                // Handle invalid non-numeric input
                 cout << "Enter a decimal minimum rating between 0.0 and 10.0: " << endl;
                 continue;
             } catch (const std::out_of_range& e) {
@@ -172,8 +186,7 @@ int main() {
             }
         }
 
-
-
+        // Open the IMDb data file
         ifstream file("../imdb_data.tsv");
 
         // Check if the file was opened successfully
@@ -232,7 +245,6 @@ int main() {
         }
         file.close();
 
-
         // Ask the user if they want the top films or random recommendations
         while (true) {
             string choice;
@@ -247,10 +259,10 @@ int main() {
                 }
                 // Sort the films and display the top 5
                 if (heap.empty()) {
+                    // Handle case where no movies match the criteria
                     cout << "\nSorry, there are not any movies that match this criteria. PLease use different criteria next time." << endl;
                 }
                 else {
-
 
                     cout << "\nPlease be patient while we generate your list of movies :)" << endl;
                     vector<HeapNode> heapCopy1 = heap;
@@ -281,12 +293,11 @@ int main() {
                     auto endShellSort = chrono::high_resolution_clock::now();
                     chrono::duration<double> shellSortDuration = endShellSort-startShellSort;
 
-                    // Output sorting times
+                    // Output sorting times for comparison
                     cout << "\nHeap Sort Time: " << heapSortDuration.count() << " seconds" << endl;
                     cout << "Insertion Sort Time: " << insertionSortDuration.count() << " seconds" << endl;
                     cout << "Merge Sort Time: " << mergeSortDuration.count() << " seconds" << endl;
                     cout << "Shell Sort Time: " << shellSortDuration.count() << " seconds" << endl;
-
 
                     // Output the 5 highest-rated movies that match the filter using heap sort
                     cout << "\nTop 5 highest-rated movies in given genre(s) with at least " << minNumVotes
@@ -330,6 +341,7 @@ int main() {
                 break;
             } else if (choice == "r") {
                 if (heap.empty()) {
+                    // Handle case where no movies match the criteria
                     cout << "\nSorry, there are not any movies that match this criteria. PLease use different criteria next time." << endl;
                 }
                 else {
@@ -356,6 +368,7 @@ int main() {
                 break;
             }
             else {
+                // Handle invalid choice input
                 cout << "That is not one of the options, please choose either 'T' or 'R'." << endl;
                 continue;
             }

@@ -7,11 +7,11 @@
 #include <algorithm>
 #include <chrono>
 #include <random>
-#include "nodes.cpp"
-#include "heap_sort.h"
-#include "insertion_sort.h"
-#include "merge_sort.h"
-#include "shell_sort.h"
+#include "algorithms/nodes.cpp"
+#include "algorithms/heap_sort.h"
+#include "algorithms/insertion_sort.h"
+#include "algorithms/merge_sort.h"
+#include "algorithms/shell_sort.h"
 
 using namespace std;
 

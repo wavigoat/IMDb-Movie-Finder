@@ -131,8 +131,8 @@ int main() {
             getline(cin, tempNumVotes);
             if (tempNumVotes.empty()) {
                 // Default minimum votes if user provides no input
-                cout << "The minimum number of rating has been defaulted to 100." << endl;
-                minNumVotes = 100;
+                cout << "The minimum number of rating has been defaulted to 100,000." << endl;
+                minNumVotes = 100000;
                 break;
             }
             try {
